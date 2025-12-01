@@ -2,135 +2,20 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhishingAgent - Your Personal Security Guard</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-</head>
+    });
 
-<body>
-    <div class="background-glow"></div>
+    // Sticky Nav Logic
+    const nav = document.querySelector('.sticky-nav');
+    const hero = document.querySelector('.hero');
 
-    <nav class="sticky-nav">
-        <div class="nav-content">
-            <div class="nav-logo-container">
-                <img src="assets/icon.png" alt="PhishingAgent Shield" class="nav-icon">
-                <span class="nav-title">PhishingAgent</span>
-            </div>
-            <a href="#download" class="nav-cta">Download</a>
-        </div>
-    </nav>
-
-    <header class="hero">
-        <div class="hero-container">
-            <div class="hero-text">
-                <div class="hero-icon-container fade-in">
-                    <img src="assets/icon.png" alt="PhishingAgent Shield" class="hero-icon">
-                </div>
-                <h1 class="title fade-in delay-1">PhishingAgent</h1>
-                <p class="tagline fade-in delay-2">The Agent That Thinks On Behalf Of You</p>
-            </div>
-
-            <div class="hero-animation fade-in delay-2">
-                <div class="browser-window">
-                    <div class="browser-header">
-                        <div class="browser-dots">
-                            <span class="dot red"></span>
-                            <span class="dot yellow"></span>
-                            <span class="dot green"></span>
-                        </div>
-                    </div>
-    </header>
-
-    <main>
-        <section class="feature-section">
-            <div class="content-wrapper depth-effect">
-                <h2 class="section-title">Why To Use?</h2>
-                <p class="section-text">In a digital world filled with invisible threats, you need a guardian that never
-                    sleeps. PhishingAgent analyzes every URL in real-time, protecting you from malicious attacks before
-                    they happen.</p>
-            </div>
-        </section>
-
-        <section class="feature-section">
-            <div class="content-wrapper depth-effect">
-                <h2 class="section-title">Free For All</h2>
-                <p class="section-text">Security is a right, not a privilege. PhishingAgent is completely free to use,
-                    ensuring everyone has access to top-tier protection without barriers.</p>
-            </div>
-        </section>
-
-        <section class="feature-section">
-            <div class="content-wrapper depth-effect">
-                <h2 class="section-title">Safety First Choice</h2>
-                <p class="section-text">Built with privacy and security at its core. We don't just block threats; we
-                    understand them. Your safety is our absolute priority.</p>
-            </div>
-        </section>
-
-        <section class="feature-section">
-            <div class="content-wrapper depth-effect">
-                <h2 class="section-title">Smart Protection</h2>
-                <p class="section-text">An intelligent agent that evolves with the threats. It doesn't just match
-                    patterns; it understands context, acting as your personal cybersecurity expert.</p>
-            </div>
-        </section>
-    </main>
-
-    <footer class="cta-footer" id="download">
-        <div class="content-wrapper depth-effect">
-            <h2 class="footer-title">Ready to Secure Your Browsing?</h2>
-            <a href="https://github.com/NandeeshaHK/PhishingAgent/releases/download/first-release/extension.zip"
-                class="download-btn">
-                Download Extension
-            </a>
-            <div class="install-instructions">
-                <h3>How to Install</h3>
-                <ol>
-                    <li>Download the <code>extension.zip</code> file.</li>
-                    <li>Unzip the file to a folder.</li>
-                    <li>Open Chrome/Edge and go to <code>chrome://extensions</code>.</li>
-                    <li>Enable <strong>Developer Mode</strong> (top right).</li>
-                    <li>Click <strong>Load Unpacked</strong> and select the folder.</li>
-                </ol>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.2
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('in-view');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.feature-section, .cta-footer').forEach(section => {
-            observer.observe(section);
-        });
-
-        // Sticky Nav Logic
-        const nav = document.querySelector('.sticky-nav');
-        const hero = document.querySelector('.hero');
-
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > hero.offsetHeight * 0.8) {
-                nav.classList.add('visible');
-            } else {
-                nav.classList.remove('visible');
-            }
-        });
+    window.addEventListener('scroll', () => {
+    if (window.scrollY > hero.offsetHeight * 0.8) {
+    nav.classList.add('visible');
+    } else {
+    nav.classList.remove('visible');
+    }
+    });
     </script>
-</body>
+    </body>
 
 </html>

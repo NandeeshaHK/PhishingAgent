@@ -642,16 +642,6 @@ h3 {
     }
 }
 
-/* Media Queries for Scenarios */
-/* Default: Desktop (Movie) */
-.mobile-only {
-    display: none;
-}
-
-.desktop-only {
-    display: block;
-}
-
 /* Typing Animation - Default (Movie) */
 .typing-text::after {
     content: "movie download";
@@ -670,7 +660,7 @@ h3 {
     }
 }
 
-/* Mobile/Portrait Styles */
+/* Responsive Adjustments */
 @media (max-width: 900px) {
     .hero-container {
         flex-direction: column;
@@ -688,32 +678,6 @@ h3 {
 
     .browser-window {
         max-width: 100%;
-    }
-
-    .desktop-only {
-        display: none;
-    }
-
-    .mobile-only {
-        display: block;
-    }
-
-    /* Typing Animation - Mobile (APK) */
-    .typing-text::after {
-        content: "apk download";
-        animation: typing-apk 2s steps(12) infinite;
-        animation-iteration-count: 1;
-        animation-fill-mode: forwards;
-    }
-}
-
-@keyframes typing-apk {
-    0% {
-        content: "";
-    }
-
-    100% {
-        content: "apk download";
     }
 }
 
