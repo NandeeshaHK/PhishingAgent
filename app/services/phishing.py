@@ -3,6 +3,7 @@ import os
 import re
 import httpx
 import asyncio
+from collections import OrderedDict
 from urllib.parse import urlparse
 from playwright.async_api import async_playwright
 from app.services.llm import get_llm
@@ -24,6 +25,28 @@ def get_mongo_client():
             print(f"Failed to connect to MongoDB: {e}")
     return mongo_client
 
+class LRUCache:
+    def __init__(self, capacity: int = 1000):
+        self.cache = OrderedDict()
+        self.capacity = capacity
+
+    def get(self, key: str):
+        if key not in self.cache:
+            return None
+        self.cache.move_to_end(key)
+        return self.cache[key]
+
+    def put(self, key: str, value: int):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
+
+# Global Cache
+domain_reputation_cache = LRUCache(capacity=1000)
+
+
 class DomainExtractor:
     def extract_domain(self, url: str) -> str:
         url = url.strip()
@@ -37,6 +60,11 @@ class DomainExtractor:
 
 class DomainChecker:
     def check_reputation(self, domain: str) -> int:
+        # 1. Check Cache
+        cached_safe = domain_reputation_cache.get(domain)
+        if cached_safe is not None:
+            return cached_safe
+
         client = get_mongo_client()
         if not client:
             return -1 # Fallback if DB not available
@@ -46,7 +74,10 @@ class DomainChecker:
             collection = db["domain_reputation"]
             doc = collection.find_one({"domain": domain})
             if doc:
-                return doc.get("safe", -1)
+                safe_val = doc.get("safe", -1)
+                # Update Cache
+                domain_reputation_cache.put(domain, safe_val)
+                return safe_val
             return -1
         except Exception as e:
             print(f"Error checking reputation: {e}")
@@ -69,6 +100,8 @@ class DomainUpdater:
                 {"$set": {"domain": domain, "safe": safe_value}},
                 upsert=True
             )
+            # Update Cache
+            domain_reputation_cache.put(domain, safe_value)
             return {"raw_url": raw_url, "safe": safe_value}
         except Exception as e:
              print(f"Error updating reputation: {e}")
