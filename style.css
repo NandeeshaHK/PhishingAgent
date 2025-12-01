@@ -347,25 +347,6 @@ h3 {
     border: 1px solid rgba(0, 186, 255, 0.2);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .title {
-        font-size: 3rem;
-    }
-
-    .section-title {
-        font-size: 2.5rem;
-    }
-
-    .content-wrapper {
-        padding: 2rem;
-    }
-
-    .hero-icon {
-        width: 120px;
-    }
-}
-
 /* Hero Layout */
 .hero-container {
     display: flex;
@@ -455,13 +436,6 @@ h3 {
     opacity: 0.5;
 }
 
-.typing-text::after {
-    content: "apk download";
-    animation: typing 2s steps(12) infinite;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-}
-
 .cursor-blink {
     animation: blink 1s infinite;
     opacity: 0.5;
@@ -469,7 +443,7 @@ h3 {
 
 .browser-body {
     background: #fff;
-    height: 300px;
+    height: 350px;
     padding: 20px;
     position: relative;
     overflow: hidden;
@@ -481,39 +455,89 @@ h3 {
     animation-delay: 2.5s;
 }
 
+/* Google Search Style Results */
 .result-item {
-    margin-bottom: 20px;
-    padding: 10px;
-    border-radius: 8px;
-    transition: background 0.3s;
+    margin-bottom: 24px;
+    padding: 0;
+    border-radius: 0;
+    transition: none;
     position: relative;
+    font-family: arial, sans-serif;
+    text-align: left;
+}
+
+.result-header {
+    margin-bottom: 4px;
+}
+
+.result-url-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #202124;
+}
+
+.url-icon {
+    width: 26px;
+    height: 26px;
+    background: #f1f3f4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #5f6368;
+    font-weight: 500;
+}
+
+.result-site-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+}
+
+.site-name {
+    font-size: 14px;
+    color: #202124;
+}
+
+.site-url {
+    font-size: 12px;
+    color: #202124;
+}
+
+.three-dots {
+    color: #5f6368;
+    margin-left: auto;
+    font-size: 18px;
 }
 
 .result-title {
     color: #1a0dab;
-    font-size: 16px;
-    margin-bottom: 2px;
-    text-decoration: underline;
+    font-size: 20px;
+    line-height: 1.3;
+    margin-bottom: 3px;
+    text-decoration: none;
     cursor: pointer;
 }
 
-.result-url {
-    color: #006621;
-    font-size: 12px;
-    margin-bottom: 2px;
+.result-title:hover {
+    text-decoration: underline;
 }
 
 .result-desc {
-    color: #545454;
-    font-size: 12px;
-    line-height: 1.4;
+    color: #4d5156;
+    font-size: 14px;
+    line-height: 1.58;
 }
 
 /* Safety Badge */
 .safety-badge {
     position: absolute;
-    right: 10px;
-    top: 10px;
+    right: 0;
+    top: 0;
     padding: 5px 10px;
     border-radius: 20px;
     font-size: 12px;
@@ -549,16 +573,6 @@ h3 {
 }
 
 /* Animations Keyframes */
-@keyframes typing {
-    0% {
-        content: "";
-    }
-
-    100% {
-        content: "apk download";
-    }
-}
-
 @keyframes blink {
 
     0%,
@@ -577,63 +591,7 @@ h3 {
     }
 }
 
-@keyframes cursorMove {
-    0% {
-        top: 110%;
-        left: 110%;
-    }
-
-    /* Start off-screen */
-    20% {
-        top: 110%;
-        left: 110%;
-    }
-
-    /* Wait for typing */
-    25% {
-        top: 80%;
-        left: 80%;
-    }
-
-    /* Move in */
-    30% {
-        top: 40px;
-        left: 100px;
-    }
-
-    /* Hover Safe Result */
-    45% {
-        top: 40px;
-        left: 100px;
-    }
-
-    /* Stay */
-    50% {
-        top: 150px;
-        left: 150px;
-    }
-
-    /* Move to Unsafe Result */
-    65% {
-        top: 150px;
-        left: 150px;
-    }
-
-    /* Stay */
-    70% {
-        top: 110%;
-        left: 110%;
-    }
-
-    /* Move out */
-    100% {
-        top: 110%;
-        left: 110%;
-    }
-}
-
-/* Badge Animations controlled by cursor timing simulation */
-/* We use animation on the badges themselves, synced with cursor */
+/* Badge Animations */
 .safe-result .safety-badge {
     animation: showSafeBadge 12s infinite;
 }
@@ -684,7 +642,35 @@ h3 {
     }
 }
 
-/* Responsive Adjustments */
+/* Media Queries for Scenarios */
+/* Default: Desktop (Movie) */
+.mobile-only {
+    display: none;
+}
+
+.desktop-only {
+    display: block;
+}
+
+/* Typing Animation - Default (Movie) */
+.typing-text::after {
+    content: "movie download";
+    animation: typing-movie 2s steps(14) infinite;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes typing-movie {
+    0% {
+        content: "";
+    }
+
+    100% {
+        content: "movie download";
+    }
+}
+
+/* Mobile/Portrait Styles */
 @media (max-width: 900px) {
     .hero-container {
         flex-direction: column;
@@ -702,5 +688,81 @@ h3 {
 
     .browser-window {
         max-width: 100%;
+    }
+
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: block;
+    }
+
+    /* Typing Animation - Mobile (APK) */
+    .typing-text::after {
+        content: "apk download";
+        animation: typing-apk 2s steps(12) infinite;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+    }
+}
+
+@keyframes typing-apk {
+    0% {
+        content: "";
+    }
+
+    100% {
+        content: "apk download";
+    }
+}
+
+/* Adjust cursor animation to fit new layout */
+@keyframes cursorMove {
+    0% {
+        top: 110%;
+        left: 110%;
+    }
+
+    20% {
+        top: 110%;
+        left: 110%;
+    }
+
+    25% {
+        top: 80%;
+        left: 80%;
+    }
+
+    30% {
+        top: 60px;
+        left: 150px;
+    }
+
+    /* Safe Result Title */
+    45% {
+        top: 60px;
+        left: 150px;
+    }
+
+    50% {
+        top: 200px;
+        left: 150px;
+    }
+
+    /* Unsafe Result Title */
+    65% {
+        top: 200px;
+        left: 150px;
+    }
+
+    70% {
+        top: 110%;
+        left: 110%;
+    }
+
+    100% {
+        top: 110%;
+        left: 110%;
     }
 }
