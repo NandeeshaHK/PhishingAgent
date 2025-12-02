@@ -1,58 +1,16 @@
-# Phishing Agent API
+# React + Vite
 
-A lightweight FastAPI server for phishing detection, deployable on Render.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Features
-- **Domain Reputation Check**: Checks against a MongoDB database.
-- **Advanced Analysis**: Uses Playwright and heuristic analysis for unknown domains.
-- **LLM Verification**: Uses Groq (or OpenAI) to verify suspicious content.
-- **API Key Authentication**: Secured via `X-API-Key` header.
+Currently, two official plugins are available:
 
-## Local Setup
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-1.  **Install Dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    playwright install chromium
-    ```
+## React Compiler
 
-2.  **Environment Variables**:
-    Create a `.env` file:
-    ```
-    API_KEY=your_secret_key
-    GROQ_API_KEY=your_groq_key
-    MONGO_URI=your_mongodb_uri
-    ```
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-3.  **Initialize Database**:
-    ```bash
-    python scripts/init_db.py
-    ```
+## Expanding the ESLint configuration
 
-4.  **Run Server**:
-    ```bash
-    uvicorn app.main:app --reload
-    ```
-
-4.  **Test Endpoint**:
-    ```bash
-    curl -X POST "http://localhost:8000/check-phishing" \
-         -H "X-API-Key: your_secret_key" \
-         -H "Content-Type: application/json" \
-         -d '{"url": "http://example.com"}'
-    ```
-
-## Deploy on Render
-
-1.  Push this repository to GitHub/GitLab.
-2.  Create a new **Web Service** on Render.
-3.  Connect your repository.
-4.  Render should automatically detect `render.yaml` (or you can manually configure).
-    - **Build Command**: `pip install -r requirements.txt`
-    - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port 10000`
-5.  **Environment Variables**:
-    - `API_KEY`: Set a strong secret.
-    - `GROQ_API_KEY`: Add your Groq API Key.
-
-## API Documentation
-Once running, visit `/docs` for the Swagger UI.
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
