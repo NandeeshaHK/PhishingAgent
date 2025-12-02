@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = None
     MONGO_URI: Optional[str] = None
     MONGO_DB_NAME: str = "phishing_agent_db"
+    ADMIN_PASSWORD: str = "123asd!@#"
 
     @property
     def groq_api_key_list(self):

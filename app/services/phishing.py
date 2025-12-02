@@ -3,6 +3,7 @@ import os
 import re
 import httpx
 import asyncio
+from datetime import datetime, timezone
 from collections import OrderedDict
 from urllib.parse import urlparse
 from playwright.async_api import async_playwright
@@ -24,6 +25,21 @@ def get_mongo_client():
         except Exception as e:
             print(f"Failed to connect to MongoDB: {e}")
     return mongo_client
+
+def increment_admin_metric(metric_name: str, value: int = 1):
+    client = get_mongo_client()
+    if not client:
+        return
+    try:
+        db = client[settings.MONGO_DB_NAME]
+        collection = db["admin"]
+        collection.update_one(
+            {"metric": metric_name},
+            {"$inc": {"value": value}},
+            upsert=True
+        )
+    except Exception as e:
+        print(f"Failed to update metric {metric_name}: {e}")
 
 class LRUCache:
     def __init__(self, capacity: int = 1000):
@@ -63,6 +79,7 @@ class DomainChecker:
         # 1. Check Cache
         cached_safe = domain_reputation_cache.get(domain)
         if cached_safe is not None:
+            increment_admin_metric("used_cache")
             return cached_safe
 
         client = get_mongo_client()
@@ -140,13 +157,15 @@ class AdvancedURLAnalyzer:
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch(headless=True)
-                context = await browser.new_context(
-                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36"
-                )
-                page = await context.new_page()
-                await page.goto(url, wait_until="networkidle", timeout=15000)
-                html = await page.content()
-                await browser.close()
+                try:
+                    context = await browser.new_context(
+                        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36"
+                    )
+                    page = await context.new_page()
+                    await page.goto(url, wait_until="networkidle", timeout=15000)
+                    html = await page.content()
+                finally:
+                    await browser.close()
                 return html
         except Exception as e:
             return f"[Playwright Error: {str(e)}]"
@@ -248,6 +267,7 @@ SAFE: <1 for safe, 0 for not so Safe>
         ]
         
         try:
+            increment_admin_metric("total_LLM_calls", 2)
             response = llm.invoke(messages)
             content = response.content
             
@@ -260,6 +280,24 @@ SAFE: <1 for safe, 0 for not so Safe>
             # 7. Update Reputation
             self.updater.update_map(raw_url, safe)
             
+            # 8. Log Unsafe Reviews
+            if safe == 0:
+                try:
+                    client = get_mongo_client()
+                    if client:
+                        db = client[settings.MONGO_DB_NAME]
+                        review_collection = db["unsafe_reviews"]
+                        review_collection.insert_one({
+                            "raw_url": raw_url,
+                            "domain": domain,
+                            "analysis": analysis_result,
+                            "llm_output": content,
+                            "timestamp": datetime.now(timezone.utc),
+                            "reviewed": False
+                        })
+                except Exception as e:
+                    print(f"Failed to log unsafe review: {e}")
+
             return {
                 "raw_url": raw_url,
                 "safe": safe,
