@@ -665,6 +665,16 @@ h3 {
 
 /* Responsive Adjustments */
 @media (max-width: 900px) {
+    .nav-content {
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .nav-logo-container {
+        margin-bottom: 0.5rem;
+    }
+
     .hero-container {
         flex-direction: column;
         text-align: center;
