@@ -13,7 +13,9 @@ const Dashboard = ({ onLogout }) => {
         total_LLM_calls: 0,
         api_calls: 0,
         used_cache: 0,
-        human_reviewed: 0
+        human_reviewed: 0,
+        reviewed_count: 0,
+        pending_count: 0
     });
     const [loading, setLoading] = useState(true);
     const [isReviewsOpen, setIsReviewsOpen] = useState(true);
@@ -34,7 +36,9 @@ const Dashboard = ({ onLogout }) => {
                 total_LLM_calls: 15,
                 api_calls: 124,
                 used_cache: 45,
-                human_reviewed: 8
+                human_reviewed: 8,
+                reviewed_count: 8,
+                pending_count: 12
             });
         } finally {
             setLoading(false);

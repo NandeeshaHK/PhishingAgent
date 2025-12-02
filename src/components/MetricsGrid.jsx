@@ -18,7 +18,19 @@ const MetricCard = ({ title, value, icon: Icon, gradient }) => (
 
 const MetricsGrid = ({ stats }) => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-full">
+            <MetricCard
+                title="Pending Reviews"
+                value={stats.pending_count}
+                icon={Activity}
+                gradient="from-yellow-500 to-orange-500"
+            />
+            <MetricCard
+                title="Reviewed Links"
+                value={stats.reviewed_count}
+                icon={UserCheck}
+                gradient="from-green-500 to-emerald-500"
+            />
             <MetricCard
                 title="Total LLM Calls"
                 value={stats.total_LLM_calls}
@@ -36,12 +48,6 @@ const MetricsGrid = ({ stats }) => {
                 value={stats.used_cache}
                 icon={Database}
                 gradient="from-amber-500 to-orange-500"
-            />
-            <MetricCard
-                title="Human Reviewed"
-                value={stats.human_reviewed}
-                icon={UserCheck}
-                gradient="from-emerald-500 to-green-500"
             />
         </div>
     );
