@@ -9,7 +9,11 @@ const ReviewsList = ({ onReviewComplete }) => {
     const fetchReviews = async () => {
         try {
             const res = await axios.get('/api/v1/admin/reviews');
-            setReviews(res.data);
+            if (Array.isArray(res.data)) {
+                setReviews(res.data);
+            } else {
+                throw new Error('Invalid response format');
+            }
         } catch (err) {
             console.error('Failed to fetch reviews', err);
             // Mock data

@@ -22,7 +22,11 @@ const Dashboard = ({ onLogout }) => {
         setLoading(true);
         try {
             const res = await axios.get('/api/v1/admin/stats');
-            setStats(res.data);
+            if (res.data && typeof res.data === 'object') {
+                setStats(res.data);
+            } else {
+                throw new Error('Invalid response format');
+            }
         } catch (err) {
             console.error('Failed to fetch stats', err);
             // Mock data for demo
