@@ -293,7 +293,7 @@ SAFE: <1 for safe, 0 for not so Safe>
                             "analysis": analysis_result,
                             "llm_output": content,
                             "timestamp": datetime.now(timezone.utc),
-                            "reviewed": False
+                            "reviewed": 0
                         })
                 except Exception as e:
                     print(f"Failed to log unsafe review: {e}")

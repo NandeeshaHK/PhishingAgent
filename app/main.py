@@ -11,6 +11,39 @@ from app.services.phishing import PhishingService, increment_admin_metric, get_m
 
 app = FastAPI(title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json")
 
+# CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for now, or specify the admin dashboard URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Middleware to count API calls
+@app.middleware("http")
+from fastapi import FastAPI, Depends, HTTPException, Security, Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Optional
+from fastapi.security.api_key import APIKeyHeader
+from starlette.status import HTTP_403_FORBIDDEN
+from app.core.config import settings
+from app.models.schemas import PhishingCheckInput, PhishingCheckOutput
+from app.services.phishing import PhishingService, increment_admin_metric, get_mongo_client
+
+app = FastAPI(title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json")
+
+# CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for now, or specify the admin dashboard URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Middleware to count API calls
 @app.middleware("http")
 async def count_api_calls(request: Request, call_next):
@@ -19,8 +52,8 @@ async def count_api_calls(request: Request, call_next):
     response = await call_next(request)
     return response
 
-# Mount Admin Dashboard
-app.mount("/admin", StaticFiles(directory="admin_panel", html=True), name="admin")
+# Admin Dashboard is deployed separately, so we don't# Mount Admin Dashboard - REMOVED as it is deployed separately
+# app.mount("/admin", StaticFiles(directory="admin_panel", html=True), name="admin")
 
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
@@ -81,7 +114,8 @@ async def get_pending_reviews(api_key: str = Depends(get_api_key)):
         raise HTTPException(status_code=500, detail="Database not available")
     
     db = client[settings.MONGO_DB_NAME]
-    reviews = list(db["unsafe_reviews"].find({"reviewed": False}, {"_id": 0}).limit(50))
+    # Find documents where reviewed is 0 or False (for backward compatibility)
+    reviews = list(db["unsafe_reviews"].find({"reviewed": {"$in": [0, False]}}, {"_id": 0}).limit(50))
     return reviews
 
 @app.post(f"{settings.API_V1_STR}/admin/review")
@@ -96,10 +130,10 @@ async def submit_review(review: ReviewUpdate, api_key: str = Depends(get_api_key
     service = PhishingService()
     service.updater.update_map(review.raw_url, review.safe)
     
-    # 2. Mark as Reviewed
+    # 2. Mark as Reviewed (Set to 1)
     db["unsafe_reviews"].update_one(
         {"raw_url": review.raw_url},
-        {"$set": {"reviewed": True}}
+        {"$set": {"reviewed": 1}}
     )
     
     # 3. Increment Human Reviewed Metric
