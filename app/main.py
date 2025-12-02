@@ -74,6 +74,10 @@ async def get_admin_stats(api_key: str = Depends(get_api_key)):
     for doc in cursor:
         stats[doc["metric"]] = doc["value"]
     
+    # Add dynamic counts from unsafe_reviews
+    stats["reviewed_count"] = db["unsafe_reviews"].count_documents({"reviewed": 1})
+    stats["pending_count"] = db["unsafe_reviews"].count_documents({"reviewed": {"$in": [0, False]}})
+    
     return stats
 
 @app.get(f"{settings.API_V1_STR}/admin/reviews")
