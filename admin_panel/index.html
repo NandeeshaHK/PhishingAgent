@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Agent Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div id="login-screen" class="screen">
+        <div class="login-card">
+            <h1>Admin Login</h1>
+            <input type="password" id="password-input" placeholder="Enter Password">
+            <button onclick="login()">Login</button>
+            <p id="login-error" class="error"></p>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="screen hidden">
+        <header>
+            <h1>Phishing Agent Admin</h1>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </header>
+
+        <main>
+            <section class="metrics-grid">
+                <div class="metric-card gradient-1">
+                    <h3>Total LLM Calls</h3>
+                    <p id="metric-llm">0</p>
+                </div>
+                <div class="metric-card gradient-2">
+                    <h3>API Calls</h3>
+                    <p id="metric-api">0</p>
+                </div>
+                <div class="metric-card gradient-3">
+                    <h3>Used Cache</h3>
+                    <p id="metric-cache">0</p>
+                </div>
+                <div class="metric-card gradient-4">
+                    <h3>Human Reviewed</h3>
+                    <p id="metric-reviewed">0</p>
+                </div>
+            </section>
+
+            <section class="charts-section">
+                <div class="chart-container">
+                    <canvas id="reviewsChart"></canvas>
+                </div>
+            </section>
+
+            <section class="reviews-section">
+                <h2>Pending Reviews</h2>
+                <div id="reviews-list" class="reviews-list">
+                    <!-- Reviews will be populated here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
