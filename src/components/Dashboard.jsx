@@ -31,15 +31,6 @@ const Dashboard = ({ onLogout }) => {
             }
         } catch (err) {
             console.error('Failed to fetch stats', err);
-            // Mock data for demo
-            setStats({
-                total_LLM_calls: 15,
-                api_calls: 124,
-                used_cache: 45,
-                human_reviewed: 8,
-                reviewed_count: 8,
-                pending_count: 12
-            });
         } finally {
             setLoading(false);
         }
