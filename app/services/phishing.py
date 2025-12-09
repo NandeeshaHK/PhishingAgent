@@ -134,12 +134,44 @@ class AdvancedURLAnalyzer:
         r"document\.location", r"malware", r"phishing",
         r"onclick=\"window\.open", r"redirect"
     ]
+    
+    DOWNLOAD_EXTENSIONS = {
+        '.exe', '.zip', '.rar', '.7z', '.msi', 
+        '.dmg', '.iso', '.apk', '.tar', '.gz', 
+        '.bin', '.pdf', '.doc', '.docx', '.xls', 
+        '.xlsx', '.ppt', '.pptx', '.mp3', '.mp4', 
+        '.avi', '.mkv', '.mov', '.wmv', '.flv',
+        '.bat', '.sh', '.cmd'
+    }
+
+    DOWNLOAD_PATTERNS = [
+        r"download=true", r"force_download=1", r"/download/", 
+        r"response-content-disposition=attachment"
+    ]
 
     def normalize_url(self, url):
         url = url.strip()
         if not url.startswith(("http://", "https://")):
             url = "https://" + url
         return url
+        
+    def is_download_link(self, url: str) -> bool:
+        """
+        Check if the URL is a direct download link based on extension or query params.
+        """
+        parsed = urlparse(url)
+        path = parsed.path.lower()
+        query = parsed.query.lower()
+
+        # 1. Check Extension
+        if any(path.endswith(ext) for ext in self.DOWNLOAD_EXTENSIONS):
+            return True
+            
+        # 2. Check Query Params / Path Patterns
+        if any(re.search(p, url, re.IGNORECASE) for p in self.DOWNLOAD_PATTERNS):
+            return True
+            
+        return False
 
     def count_affiliates(self, html):
         return sum(len(re.findall(p, html, re.IGNORECASE)) for p in self.AFFILIATE_PATTERNS)
@@ -227,6 +259,17 @@ class PhishingService:
         self.analyzer = AdvancedURLAnalyzer()
 
     async def check_url(self, raw_url: str):
+        # 0. Check for Download Link
+        normalized_url = self.analyzer.normalize_url(raw_url)
+        if self.analyzer.is_download_link(normalized_url):
+            return {
+                "raw_url": raw_url,
+                "safe": 1, 
+                "status": "download",
+                "is_download": True,
+                "analysis": "Download link detected"
+            }
+
         # 1. Extract Domain
         domain = self.extractor.extract_domain(raw_url)
         
